@@ -4,7 +4,7 @@ import requests
 
 
 def emotion_detector(text_to_analyze):
-    """Send text to Watson NLP and return the emotion analysis response."""
+    """Analyze text and return the emotion scores and dominant emotion."""
 
     url = (
         "https://sn-watson-emotion.labs.skills.network/v1/"
@@ -29,4 +29,15 @@ def emotion_detector(text_to_analyze):
         timeout=10
     )
 
-    return response.text
+    formatted_response = response.json()
+    emotions = formatted_response["emotionPredictions"][0]["emotion"]
+    dominant_emotion = max(emotions, key=emotions.get)
+
+    return {
+        "anger": emotions["anger"],
+        "disgust": emotions["disgust"],
+        "fear": emotions["fear"],
+        "joy": emotions["joy"],
+        "sadness": emotions["sadness"],
+        "dominant_emotion": dominant_emotion
+    }
