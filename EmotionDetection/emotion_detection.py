@@ -4,7 +4,7 @@ import requests
 
 
 def emotion_detector(text_to_analyze):
-    """Analyze text and return the emotion scores and dominant emotion."""
+    """Analyze text and return emotion scores and dominant emotion."""
 
     url = (
         "https://sn-watson-emotion.labs.skills.network/v1/"
@@ -28,6 +28,18 @@ def emotion_detector(text_to_analyze):
         json=input_json,
         timeout=10
     )
+
+    if response.status_code == 400:
+        return {
+            "anger": None,
+            "disgust": None,
+            "fear": None,
+            "joy": None,
+            "sadness": None,
+            "dominant_emotion": None
+        }
+
+    response.raise_for_status()
 
     formatted_response = response.json()
     emotions = formatted_response["emotionPredictions"][0]["emotion"]

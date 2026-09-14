@@ -12,8 +12,15 @@ app = Flask(__name__)
 def detect_emotion():
     """Analyze the text received from the web interface."""
 
-    text_to_analyze = request.args.get("textToAnalyze")
+    text_to_analyze = request.args.get("textToAnalyze", "")
+
+    if not text_to_analyze.strip():
+        return "Invalid text! Please try again!"
+
     response = emotion_detector(text_to_analyze)
+
+    if response["dominant_emotion"] is None:
+        return "Invalid text! Please try again!"
 
     return (
         "For the given statement, the system response is "
